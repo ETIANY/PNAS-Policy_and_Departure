@@ -6,3 +6,4 @@ The Trump Administration's China Initiative policy aimed to limit cooperation be
 Please note:
 Within the data preparation process (SI, Supplementary Materials 1), we manually matched the university ranking and journal impact factor.
 The 732 Chinese surnames is uploaded in as Preparation_data-732 Chinese surnames.csv.
+Figures are simplely showed through python code but eventually ploted by Origin.
