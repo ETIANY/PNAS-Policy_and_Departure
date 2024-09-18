@@ -1,46 +1,46 @@
 import csv
 import itertools
 
-input_file = "C-merged_result-all.csv"
-output_file = "C-all0427.csv"
+input_file = "input.csv"
+output_file = "output.csv"
 memory_buffer = []
 
-# 初始化处理行数和distinct列1的集合
+# Initialize the collection of the number of processed rows and distinct column 1
 processed_rows = 0
 distinct_column_1 = set()
 
-# 打开输入文件
+# open the input file
 with open(input_file, "r", encoding="utf-8") as input_csv:
     csv_reader = csv.reader(input_csv)
-    # 跳过表头
+    # skip the header
     next(csv_reader)
 
-    # 遍历输入文件的每一行
+    # iterate through each line of the input file
     for row in csv_reader:
         try:
-            # 将当前行的列1添加到集合中
+            # add column 1 of the current row to the collection
             distinct_column_1.add(row[0])
 
-            # 存储到内存缓冲区中
+            # stored in a memory buffer
             memory_buffer.append(row)
         except (IndexError, ValueError):
-            # 如果行中的列数不正确或者无法转换为整数，则跳过该行
+            # If the number of columns in the row is incorrect or cannot be converted to an integer, the row is skipped
             pass
 
-# 对内存缓冲区中的数据按照作者ID和年份排序
+# The data in the memory buffer is sorted by author ID and year
 memory_buffer.sort(key=lambda x: (int(x[0]) if x[0].isdigit() else 0, int(x[7]) if x[7].isdigit() else 0))
 
 
-# 分组，按照作者ID分组
+# grouping grouped by author id
 grouped_data = itertools.groupby(memory_buffer, key=lambda x: x[0])
 
-# 处理作者信息字典，标注第23列
+# Handle the Author Information Dictionary with column 23
 with open(output_file, "w", encoding="utf-8", newline='') as output_csv:
     csv_writer = csv.writer(output_csv)
 
     for author_id, rows in grouped_data:
-        rows = list(rows)  # 将行转换为列表以便排序
-        # 检查作者id对应的所有行的第15列和第19列的情况
+        rows = list(rows)  # convert rows to lists for easy sorting
+        # Check the case in columns 15 and 19 of all rows corresponding to the author ID
         has_only_cn = all("cn" in row[14].lower() and "cn" in row[18].lower() for row in rows)
         has_only_us = all("us" in row[14].lower() and "us" in row[18].lower() for row in rows)
         has_no_uscn = all(
@@ -61,7 +61,7 @@ with open(output_file, "w", encoding="utf-8", newline='') as output_csv:
                         ("us" not in row[18].lower() and "cn" not in row[18].lower()) and "cn" not in row[14].lower())
             for row in rows)
 
-        # 根据情况标注第23列
+        # label column 23 as appropriate
         for row in rows:
             if has_only_cn:
                 row.append('1')
@@ -86,10 +86,10 @@ with open(output_file, "w", encoding="utf-8", newline='') as output_csv:
             else:
                 row.append('10')
 
-            # 写入处理后的行到输出文件
+            # write processed lines to the output file
             csv_writer.writerow(row)
             processed_rows += 1
 
-# 打印处理完的行数和distinct列1的个数
-print(f"处理完成的行数：{processed_rows}")
-print(f"distinct列1的个数：{len(distinct_column_1)}")
+# The number of processed rows and the number of distinct columns 1 are printed
+print(f"the number of rows processed to complete：{processed_rows}")
+print(f"distinct number of column_1：{len(distinct_column_1)}")

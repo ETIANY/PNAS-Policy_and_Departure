@@ -51,22 +51,22 @@ chinese_surname = [
     "zao", "zhangsun", "zhongsun", "zhuge", "zhuansun", "zi", "ziche", "zongzheng", "zuoqiu"
 ]
 
-# 获取当前工作目录中的所有 CSV 文件
-csv_folder = "D:\openalex\pythonProject\china-sci\\2-all_8_china2"
+# get all csv files in the current working directory
+csv_folder = "cnsurname"
 csv_files = [file for file in os.listdir(csv_folder) if file.endswith(".csv")]
 
 for csv_file in csv_files:
     csv_file_path = os.path.join(csv_folder, csv_file)
     rows = []
 
-    # 打开原始 CSV 文件
+    # open the original csv file
     with open(csv_file_path, "r", encoding="utf-8") as f:
-        # 读取 CSV 文件内容
+        # read the contents of the csv file
         csv_reader = csv.reader(f)
 
-        # 读取每一行数据，同时写入处理后的结果
+        # Each row of data is read and the processed result is written
         for row in csv_reader:
-            # 检查姓名中是否包含中文字符
+            # check if the name contains chinese characters
             if any('\u4e00' <= char <= '\u9fff' for char in row[1]):
                 if row[18] in ["JP", "KR", "SG"] and row[14] in ["JP", "KR", "SG"]:
                     row.append("0")
@@ -74,9 +74,9 @@ for csv_file in csv_files:
                     row.append("1")
 
             else:
-                # 处理姓名列，替换点号为空格并拆分成单词
+                # Work with the name column, replace the dot with a space and split it into words
                 name_tokens = row[1].replace(".", " ").replace("-", " ").split()
-                # 遍历姓名中的每个单词，检查是否都在关键词列表中，是则将第21列置为2
+                # Go through each word in the name to see if it's in the keyword list, and if yes, set column 21 to 2
                 if any(token.lower() in chinese_surname for token in name_tokens):
                     row.append("1")
                 else:
@@ -84,13 +84,13 @@ for csv_file in csv_files:
 
             rows.append(row)
 
-    # 打开原始 CSV 文件，并写入处理后的结果
+    # Open the original CSV file and write the processed results
     with open(csv_file_path, "w", encoding="utf-8", newline='') as f:
-        # 创建 CSV 写入对象
+        # create a csv write object
         csv_writer = csv.writer(f)
-        # 将处理后的每一行写入原始文件
+        # write each processed line to the original file
         csv_writer.writerows(rows)
-    # 打印处理完的文件名
-    print(f"{csv_file} 处理完")
+    # prints the name of the processed file
+    print(f"{csv_file} processed successfully")
 
 print("Processing completed!")

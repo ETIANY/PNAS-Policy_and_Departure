@@ -1,13 +1,13 @@
 import pandas as pd
 
-# 读取CSV文件
-file_path = '20-leave_to只有一个国家且concept_0唯一.csv'
+# read the csv file
+file_path = 'input.csv'
 df = pd.read_csv(file_path)
 
-# 处理/N为空值
+# handle n as a null value
 df.replace('', pd.NA, inplace=True)
 
-# 定义根据 concept_0 判断 subject 的函数
+# Define a function that judges a subject based on concept_0
 def categorize_subject(concept):
     if concept in ['41008148', '127413603']:
         return 'Engineering and computer science'
@@ -20,8 +20,8 @@ def categorize_subject(concept):
     else:
         return 'Other'
 
-# 根据 concept_0 判断 subject 并新增一列
+# Judge the subject based on concept_0 and add a new column
 df['subject'] = df['concept_0'].astype(str).apply(categorize_subject)
 
-# 保存修改后的 DataFrame 到 CSV 文件中
-df.to_csv('21-leave_to只有一个国家且concept_0唯一-subject.csv', index=False)
+# save the modified dataframe to a csv file
+df.to_csv('output.csv', index=False)

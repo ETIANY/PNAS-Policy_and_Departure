@@ -1,40 +1,40 @@
 import pandas as pd
 
-# 读取CSV文件
-df = pd.read_csv('14-all.csv', header=None)
+# read the csv file
+df = pd.read_csv('input.csv', header=None)
 
 
-# 定义函数进行判断
+# define functions to make judgments
 def process_group(group):
-    # 初始化标志列为0
+    # the initialization flag is listed as 0
     group[31] = 0
 
-    # 获取第一行的年份
+    # get the year for the first row
     n = group.iloc[0, 7]
 
-    # 找到所有26列为1的行
+    # find all 26 rows with column 1
     rows_with_one = group[(group[25] == 1) & (group[24] != 0)]
 
     for index, row in rows_with_one.iterrows():
-        # 获取第30列的年份
+        # get the year for column 30
         m_values = group[group[29].notna()][29].tolist()
 
-        # 找到所有m-n小于等于5的行，并且第15列为'CN'
+        # Find all rows with m-n less than or equal to 5 and column 15 'CN'
         valid_rows = group[(group[29] - n <= 5) & (group[14] == 'CN')]
 
-        # 找到25列的年份
+        # find the year for 25 columns
         x = row[24]
 
-        # 如果存在满足条件的行，并且25列的年份减去n小于等于7
+        # If there are rows that meet the criteria, and the year minus n in 25 columns is less than or equal to 7
         if not valid_rows.empty and x - n <= 7:
-            # 将31列标注为1
+            # label 31 columns as 1
             group.at[index, 31] = 1
 
     return group
 
 
-# 按author_id分组并应用处理函数
+# group by author_id and apply processing functions
 df = df.groupby(0).apply(process_group)
 
-# 将结果写入CSV文件
-df.to_csv('15-junior标记-us1且5年内CN七年内离开.csv', index=False, header=False)
+# write the results to a csv file
+df.to_csv('output.csv', index=False, header=False)

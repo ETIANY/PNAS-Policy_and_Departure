@@ -1,7 +1,7 @@
 import csv
 
-input_file = "B-all_year处理.csv"
-output_file = "C-all-第一篇年份差和第一篇在美国发表.csv"
+input_file = "input.csv"
+output_file = "output.csv"
 
 # initialize the collection of unique author ids
 distinct_author_ids = set()
@@ -71,8 +71,8 @@ with open(input_file, "r", encoding="utf-8") as input_csv:
                 # If the number of columns in the row is incorrect or cannot be converted to an integer, the row is skipped
                 pass
 
-# Calculate the number of distinct author IDs in column 25 1
+# Calculate the number of distinct author IDs in column 25 with 1
 count_author_ids_with_1 = sum(1 for author_id in distinct_author_ids if first_publication_info[author_id][1] == "us")
 
-# Output the number of distinct author IDs in column 25 1
-print(f"第25列为1的不重复作者id的数量：{count_author_ids_with_1}")
+# Output the number of distinct author IDs in column 25 with 1
+print(f"the number of distinct author IDs in column 25 with 1：{count_author_ids_with_1}")

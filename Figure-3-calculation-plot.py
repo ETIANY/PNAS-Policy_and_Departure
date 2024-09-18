@@ -3,23 +3,23 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# 读取CSV文件
+# read the csv file
 input_file = 'input.csv'
 df = pd.read_csv(input_file, low_memory=False)
 
-# 将 '\N' 替换为 NaN
+# replace '\N' as NaN
 df.replace('\\N', np.nan, inplace=True)
 
-# 解析 leave_to 列，只保留值为 '1' 的行
+# Parse the leave_to column, keeping only the rows with a value of '1'
 df['leave_to'] = df['leave_to'].astype(str).apply(lambda x: x == '1')
 
-# 转换 leave_year 列为整数类型
+# convert leave_year column to an integer type
 df['leave_year'] = pd.to_numeric(df['leave_year'], errors='coerce')
 
-# 过滤数据
+# filter the data
 filtered_df = df[(df['leave_to'] == True) & (df['leave_year'] >= 2000) & (df['leave_year'] <= 2023)]
 
-# 确保所有需要计算平均值的列都是数值类型
+# Make sure that all the columns that need to be averaged are of the numeric type
 columns_to_average = [
     'article_count_pre3', 'is_uscncoop_count_pre3', 'is_uscncoop1_count_pre3',
     'is_uscncoop2_count_pre3', 'is_uscncoop3_count_pre3', 'not_uscncoop1_count_pre3',
@@ -33,7 +33,7 @@ columns_to_average = [
 for column in columns_to_average:
     filtered_df.loc[:, column] = pd.to_numeric(filtered_df[column], errors='coerce')
 
-# 定义阶段
+# define the stage
 stages = {
     '2008-2012': (2008, 2012),
     '2013-2017': (2013, 2017),
@@ -41,7 +41,7 @@ stages = {
     '2023': (2023, 2023)
 }
 
-# 计算各阶段的年均值
+# calculate the annual average for each period
 stage_means = {}
 for stage, (start, end) in stages.items():
     stage_means[stage] = filtered_df[(filtered_df['leave_year'] >= start) & (filtered_df['leave_year'] <= end)][columns_to_average].mean()
@@ -50,22 +50,22 @@ stage_means_df = pd.DataFrame(stage_means).transpose()
 stage_means_df.index.name = 'stage'
 stage_means_df.reset_index(inplace=True)
 
-# 计算2008-2012年的基准值
+# baseline values for 2008 2012 were calculated
 baseline = stage_means_df[stage_means_df['stage'] == '2008-2012'].iloc[0]
 
-# 计算标准化值
+# normalized values are calculated
 normalized_values = stage_means_df.copy()
 for column in columns_to_average:
     normalized_values[column] = stage_means_df[column] / baseline[column]
 
-# 保存结果到CSV文件
+# save the results to a csv file
 output_file_mean = 'output_stage_means.csv'
 output_file_normalized = 'output_normalized_values.csv'
 stage_means_df.to_csv(output_file_mean, index=False)
 normalized_values.to_csv(output_file_normalized, index=False)
-print(f"处理完成，结果已保存到 {output_file_mean} 和 {output_file_normalized}")
+print(f"results are in {output_file_mean} and {output_file_normalized}")
 
-# 分组绘图
+# grouped drawings
 group_pairs = [
     ('article_count_pre3', 'article_count_aft3', 'is_uscncoop_count_pre3', 'is_uscncoop_count_aft3'),
     ('is_uscncoop1_count_pre3', 'is_uscncoop1_count_aft3', 'not_uscncoop1_count_pre3', 'not_uscncoop1_count_aft3'),
@@ -74,7 +74,7 @@ group_pairs = [
     ('is_uscncoop_avgjf_pre3', 'is_uscncoop_avgjf_aft3', 'not_uscncoop_avgjf_pre3', 'not_uscncoop_avgjf_aft3')
 ]
 
-# 绘制平均值图表
+# plot a chart of averages
 plt.figure(figsize=(15, 30))
 for i, (pre1, aft1, pre2, aft2) in enumerate(group_pairs, 1):
     plt.subplot(len(group_pairs), 1, i)
@@ -90,9 +90,9 @@ for i, (pre1, aft1, pre2, aft2) in enumerate(group_pairs, 1):
 plt.tight_layout()
 plt.savefig('output_mean_values_charts.png')
 plt.show()
-print(f"平均值图表已保存为 output_mean_values_charts.png")
+print(f"figure is in output_mean_values_charts.png")
 
-# 绘制标准化值图表
+# chart normalized values
 plt.figure(figsize=(15, 30))
 for i, (pre1, aft1, pre2, aft2) in enumerate(group_pairs, 1):
     plt.subplot(len(group_pairs), 1, i)
@@ -108,4 +108,4 @@ for i, (pre1, aft1, pre2, aft2) in enumerate(group_pairs, 1):
 plt.tight_layout()
 plt.savefig('output_normalized_values_charts.png')
 plt.show()
-print(f"标准化值图表已保存为 output_normalized_values_charts.png")
+print(f"figure is in output_normalized_values_charts.png")

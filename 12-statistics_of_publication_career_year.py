@@ -3,7 +3,7 @@ import pandas as pd
 import statistics
 
 
-# 读取CSV文件
+# read the csv file
 def read_csv(filename):
     data = []
     with open(filename, 'r', encoding='utf-8') as file:
@@ -13,7 +13,7 @@ def read_csv(filename):
     return data
 
 
-# 统计academic_year
+# statistical academic_year
 def count_academic_year(data):
     df = pd.DataFrame(data)
     academic_years = df.groupby(10)[0].nunique().reset_index(name='count')  # 统计每个academic_year年份下不同的ID数量
@@ -21,49 +21,49 @@ def count_academic_year(data):
     return academic_years
 
 
-# 输出统计结果
+# output statistical results
 def output_statistics(academic_years):
-    # 计算中位数
+    # calculate the median
     median = statistics.median(academic_years['count'])
 
-    # 计算众数
+    # calculate the mode
     mode = statistics.mode(academic_years['count'])
 
-    # 计算平均值
+    # calculate the average
     mean = statistics.mean(academic_years['count'])
 
-    # 计算方差
+    # calculate the variance
     variance = statistics.variance(academic_years['count'])
 
-    # 计算最大值
+    # calculate the maximum value
     maximum = max(academic_years['count'])
 
-    # 计算最小值
+    # calculate the minimum value
     minimum = min(academic_years['count'])
 
-    # 计算四分位数
+    # quartile quantiles are calculated
     quartiles = academic_years['count'].quantile([0.25, 0.5, 0.75])
 
     return median, mode, mean, variance, maximum, minimum, quartiles
 
 
-# 写入统计结果到CSV文件
+# write statistics to a csv file
 def write_csv(output_filename, academic_year_counts):
     academic_year_counts.to_csv(output_filename, index=False)
 
 
-# 主函数
+# main function
 def main(input_filename, output_filename):
-    # 读取CSV文件
+    # read the csv file
     data = read_csv(input_filename)
 
     # 统计academic_year
     academic_year_counts = count_academic_year(data)
 
-    # 写入统计结果到CSV文件
+    # write statistics to a csv file
     write_csv(output_filename, academic_year_counts)
 
-    # 输出统计信息
+    # output statistics
     median, mode, mean, variance, maximum, minimum, quartiles = output_statistics(academic_year_counts)
     print("Median:", median)
     print("Mode:", mode)
@@ -76,6 +76,6 @@ def main(input_filename, output_filename):
 
 
 if __name__ == "__main__":
-    input_filename = "9-1-列11学术生涯-使用了6-1的代码-年份乱序.csv"  # 输入的CSV文件名
-    output_filename = "9-3-学术生涯统计.csv"  # 输出的CSV文件名
+    input_filename = "input.csv"  # enter the name of the csv file
+    output_filename = "output.csv"  # the name of the output csv file
     main(input_filename, output_filename)

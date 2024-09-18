@@ -3,8 +3,8 @@ import pandas as pd
 from tqdm import tqdm
 
 # Define input and output folders
-input_folder = "A-all-8-china1-3-2012-2023"
-output_folder = "A-all-8-china1-3-2012-2023-cn"
+input_folder = "input"
+output_folder = "output"
 
 # Create the output folder if it doesn't exist
 if not os.path.exists(output_folder):
